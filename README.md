@@ -1,5 +1,5 @@
 # Risk
-Risk game in python
+This is an implementation of risk in python. The starting code was obtained from [Whysmerhill](https://github.com/Whysmerhill/Risk).
 
 Launch GUI.py
 
