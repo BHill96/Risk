@@ -60,8 +60,3 @@ TODO:
 <del><li>give goals to player</li></del>
 <li><del>function next player</del></li>
 </ul>
-
-Questions:
-<ul>
-<li>dead players can win anyway ?</li>
-</ul>
