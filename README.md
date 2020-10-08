@@ -1,5 +1,5 @@
 # Risk
-This is an implementation of risk in python. The starting code was obtained from [Whysmerhill](https://github.com/Whysmerhill/Risk).
+This is an implementation of risk in python. The starting code was obtained from [Whysmerhill](https://github.com/Whysmerhill/Risk), and then function names and comments were translated from french to english.
 
 Launch GUI.py
 
