@@ -316,7 +316,7 @@ class CurrentWindow():
 
 		# HUD
 		bar=pygame.image.load(PATH_IMG+BAR_IMG).convert_alpha()
-		bar=pygame.transform.scale(barre,(f_w,f_h-h))
+		bar=pygame.transform.scale(bar,(f_w,f_h-h))
 
 		self.functions=[]
 		self.surfaces.extend([[background,(0,0)],[bar,(0,h)],[map_world,(0,0)]])
