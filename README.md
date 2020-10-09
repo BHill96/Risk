@@ -36,7 +36,7 @@ TODO:
 <li>Fonctionality : save </li>
 <li>Don't allow multiple players to take the same color</li>
 <li>color are horrible</li>
-<li>Permettre le combat tours par tours avec interruption du joueurs ou combat instant</li>
+<li>Allow turn-based combat with player interruption or instant combat</li>
 <li>debug mod</li>
 <li>check neighbor</li>
 <li>encoding for french</li>
