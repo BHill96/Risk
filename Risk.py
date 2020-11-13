@@ -410,7 +410,7 @@ class Turns():
 				losses[0]=losses[0]+1
 		return losses
 
-	def attaque(self,pays_a,pays_d,nb_attackers):
+	def attack(self,pays_a,pays_d,nb_attackers):
 		res_l=[]
 		while(True):
 			if nb_attackers>2:

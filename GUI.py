@@ -357,6 +357,7 @@ class CurrentWindow():
 		# Display troops
 		display_troops(self.textes,sprites_pays,self.map)
 
+                # This is where the game logic is
 		while display:
 			for event in pygame.event.get():
 				if event.type == QUIT:
@@ -499,8 +500,8 @@ class CurrentWindow():
 									# 	print(e.args)
 								else:
 									# Raise error
-									print('pays n\'appartenant pas au joueur')
-					elif self.turns.list_phase[self.turns.phase] == 'attaque':
+									print('Country does not belong to player')
+					elif self.turns.list_phase[self.turns.phase] == 'attack':
 						if click[0]==1 and not select: # Selection of attacking country
 							pays1=next((p for p in self.map.pays if p.id == id_pays_tmp), None)
 							self.pays_select=pays1
@@ -520,10 +521,10 @@ class CurrentWindow():
 								select=False
 								self.tmp=[]
 								atck_winmove=False
-							elif pays2.id_player!=self.turns.player_turn and pays2.id in pays1.voisins:
+							elif pays2.id_player!=self.turns.player_turn and pays2.id in pays1.neighbor:
 								try:
 									self.dices=[] # Delete old dice sprites
-									atck,res_l=self.turns.attaque(pays1,pays2,self.nb_units)
+									atck,res_l=self.turns.attack(pays1,pays2,self.nb_units)
 									print(res_l)
 									for idx,res in enumerate(res_l):
 										roll_dices(self,res[0],res[2],600,sprites_pays[0].map_pays.get_height()+10+idx*DICE_SIZE*1.1) # Not clean
