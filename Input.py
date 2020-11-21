@@ -68,9 +68,9 @@ def launch_game(entries):
       nb_players=len(players_names)
       T=Turns(nb_players,M)
       T.start_deploy()
-      print(T.distrib_pays(M.pays))
+      print(T.distrib_country(M.country))
       T.print_players()
-      #M.print_pays()
+      #M.print_country()
       colors=ColorMap()
       for idx,play_name in enumerate(players_names):
          T.players[idx].color=correspondance_colors(players_colors[idx],colors)
