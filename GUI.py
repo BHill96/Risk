@@ -214,9 +214,9 @@ def display_hud(nb_units,t_hud,turns,pos,hide):
         textRect.topleft = pos
         t_hud.append([textSurf, textRect])
 
-def display_continent(cont,temp_layer,sprites_country_masque):
+def display_continent(cont,temp_layer):
     for p in cont.country:
-        temp_layer.append(next((x.map_country for x in sprites_country_masque if x.id == p.id), None))
+        temp_layer.append(next((x.map_country for x in self.sprites_country_masque if x.id == p.id), None))
 
 def save_game(obj_lst):
     # Saving the objects:
@@ -350,7 +350,7 @@ class CurrentWindow():
                    self.help_menu = not self.help_menu
                elif event.key == K_c:
                    self.tmp=[]
-                   display_continent(self.turns.map.continents[id_c],self.tmp,sprites_country_masque)
+                   display_continent(self.turns.map.continents[id_c],self.tmp)
                    id_c=(id_c+1)%len(self.turns.map.continents)
                elif event.key == K_u: # Card usage
                    self.turns.players[self.turns.player_turn-1].use_best_cards()
@@ -495,6 +495,18 @@ class CurrentWindow():
             self.final_layer.append([win_screen,(0,0)])
             display_win(self.final_layer,self.players)
 
+    # Loads map images
+    def load_sprites(self, glob_country):
+        for idx,fl in enumerate(glob_country):
+            s=pygame.image.load(fl).convert()
+            coeff=f_w/s.get_width()
+            s=pygame.transform.scale(s,(int(coeff*s.get_width()),int(coeff*s.get_height())))
+            sp=SpritePays(s,fl)
+            sp_masque=SpritePays(s.copy(),fl)
+            color_surface(sp_masque,(1,1,1),150)
+            self.sprites_country.append(sp)
+            self.sprites_country_masque.append(sp_masque)
+
     # This function manages the game.
     def display(self,fonction=None):
         colormap=ColorMap()
@@ -508,17 +520,9 @@ class CurrentWindow():
         id_c=0
         hide=True
         # Passing sprites
-        sprites_country_masque=[]
+        self.sprites_country_masque=[]
         # Changing country sprites
-        for idx,fl in enumerate(glob_country):
-            s=pygame.image.load(fl).convert()
-            coeff=f_w/s.get_width()
-            s=pygame.transform.scale(s,(int(coeff*s.get_width()),int(coeff*s.get_height())))
-            sp=SpritePays(s,fl)
-            sp_masque=SpritePays(s.copy(),fl)
-            color_surface(sp_masque,(1,1,1),150)
-            self.sprites_country.append(sp)
-            sprites_country_masque.append(sp_masque)
+        self.load_sprites(glob_country)
 
         # Color countries by player color
         self.color_players(self.sprites_country)
@@ -532,6 +536,7 @@ class CurrentWindow():
         display_troops(self.textes,self.sprites_country,self.map)
 
         # This is where the game logic is
+        mouse_color = (0,0,0,0)
         while self.display:
             self.key_presses()
             self.draw() 
@@ -553,7 +558,7 @@ class CurrentWindow():
             try:
                 if mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255):
                     id_country_tmp=mouse_color[0]-100
-                    sp_msq=next((sp for sp in sprites_country_masque if sp.id == id_country_tmp), None)
+                    sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == id_country_tmp), None)
                     if id_country_tmp != self.sprite_select:
                         self.window.blit(sp_msq.map_country,(0,0))
                         pygame.display.update(sp_msq.map_country.get_rect())
