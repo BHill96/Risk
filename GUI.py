@@ -321,6 +321,61 @@ class CurrentWindow():
         self.functions=[]
         self.surfaces.extend([[background,(0,0)],[bar,(0,h)],[map_world,(0,0)]])
 
+    def key_presses(self):
+       for event in pygame.event.get():
+           if event.type == QUIT:
+               self.display=0
+           elif event.type == KEYDOWN:
+               if event.key == K_ESCAPE:
+                   self.display=0
+               elif event.key == K_n:
+                   try:
+                       self.turns.next()
+                   except ValueError as e:
+                       print(e.args)
+                   self.tmp=[]
+                   self.select=False
+                   self.sprite_select=0
+               elif event.key == K_p:
+                   try:
+                       self.turns.next_player()
+                   except ValueError as e:
+                       print(e.args)
+                   self.tmp=[]
+                   self.select=False
+                   self.sprite_select=0
+               elif event.key == K_w: # Remove, debug func
+                   self.turns.game_finish=True
+               elif event.key == K_h:
+                   help_menu = not help_menu
+               elif event.key == K_c:
+                   self.tmp=[]
+                   display_continent(self.turns.map.continents[id_c],self.tmp,sprites_country_masque)
+                   id_c=(id_c+1)%len(self.turns.map.continents)
+               elif event.key == K_u: # Card usage
+                   self.turns.players[self.turns.player_turn-1].use_best_cards()
+               elif event.key == K_d: # Display/Hide player goals
+                   hide = not hide
+               elif event.key == K_s: # Save backup
+                   save_game(self)
+               elif event.key == K_r: # Restore
+                   restore_game(self.turns)
+           elif event.type == MOUSEBUTTONDOWN:
+               try:
+                   if event.button==3: # Right click to unselect
+                       self.tmp=[]
+                       self.select=False
+                       self.sprite_select=0
+                   elif event.button==4: # Scroll wheel up
+                       self.nb_units+=1
+                   elif event.button==5: # Scroll wheel down
+                       if self.nb_units>0:
+                           self.nb_units-=1
+               except AttributeError as e:
+                   print('You should select a country first')
+               except ValueError as e:
+                   print(e.args)
+
     # This function manages the placement phase
     def placement(self, _click, _id_country_tmp):
         if _click[0]==1:
@@ -401,7 +456,7 @@ class CurrentWindow():
     # This function manages the game.
     def display(self,fonction=None):
         colormap=ColorMap()
-        display=1
+        self.display=1
         self.select=False
         self.atck_winmove=False
         self.sprite_select=-1
@@ -435,61 +490,8 @@ class CurrentWindow():
         display_troops(self.textes,self.sprites_country,self.map)
 
                 # This is where the game logic is
-        while display:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    display=0
-                elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        display = 0
-                    elif event.key == K_n:
-                        try:
-                            self.turns.next()
-                        except ValueError as e:
-                            print(e.args)
-                        self.tmp=[]
-                        self.select=False
-                        self.sprite_select=0
-                    elif event.key == K_p:
-                        try:
-                            self.turns.next_player()
-                        except ValueError as e:
-                            print(e.args)
-                        self.tmp=[]
-                        self.select=False
-                        self.sprite_select=0
-                    elif event.key == K_w: # Remove, debug func
-                        self.turns.game_finish=True
-                    elif event.key == K_h:
-                        help_menu = not help_menu
-                    elif event.key == K_c:
-                        self.tmp=[]
-                        display_continent(self.turns.map.continents[id_c],self.tmp,sprites_country_masque)
-                        id_c=(id_c+1)%len(self.turns.map.continents)
-                    elif event.key == K_u: # Card usage
-                        self.turns.players[self.turns.player_turn-1].use_best_cards()
-                    elif event.key == K_d: # Display/Hide player goals
-                        hide = not hide
-                    elif event.key == K_s: # Save backup
-                        save_game(self)
-                    elif event.key == K_r: # Restore
-                        restore_game(self.turns)
-                elif event.type == MOUSEBUTTONDOWN:
-                    try:
-                        if event.button==3: # Right click to unselect
-                            self.tmp=[]
-                            self.select=False
-                            self.sprite_select=0
-                        elif event.button==4: # Scroll wheel up
-                            self.nb_units+=1
-                        elif event.button==5: # Scroll wheel down
-                            if self.nb_units>0:
-                                self.nb_units-=1
-                    except AttributeError as e:
-                        print('You should select a country first')
-                    except ValueError as e:
-                        print(e.args)
-
+        while self.display:
+            self.key_presses()
             for surface in self.surfaces:
                 self.window.blit(surface[0],surface[1])
             for dice in self.dices:
