@@ -625,27 +625,19 @@ if __name__ == '__main__':
     T.print_players()
     #M.print_country()
     Colors=ColorMap()
-    T.players[0].color=Colors.dark_purple
-    T.players[1].color=Colors.dark_green
-    T.players[2].color=Colors.dark_red
-    # T.players[3].color=Colors.white
-    # T.players[4].color=Colors.yellow
-    # T.players[5].color=Colors.cian
     T.players[0].name='Player A'
+    T.players[0].color=Colors.dark_purple
     T.players[1].name='Player B'
+    T.players[1].color=Colors.dark_green
     T.players[2].name='Player C'
-    # T.players[3].name='wis'
-    # T.players[4].name='gogor'
-    # T.players[5].name='pilou'
-    # T.players[3].color=grey
+    T.players[2].color=Colors.dark_red
 
     pygame.init()
     clock = pygame.time.Clock()
     window = pygame.display.set_mode((f_w, f_h))
     Win=CurrentWindow(window,T)
     Win.game.nb_players=3
-    Win.game.players=['nico','nono','jojo']
-    #menu_but(Win)                          # Display init?
+    Win.game.players=[T.players[0].name, T.players[1].name, T.players[2].name]
     Win.functions.append(Win.start_game)        # Init functions
     clock.tick(60)
 
