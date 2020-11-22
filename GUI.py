@@ -453,6 +453,27 @@ class CurrentWindow():
                 self.nb_units = 0
                 self.turns.next()
 
+    # draws window
+    def draw(self):
+        for surface in self.surfaces:
+            self.window.blit(surface[0],surface[1])
+        for dice in self.dices:
+            self.window.blit(dice[0],dice[1])
+        #for sprite in self.sprites_country:
+        #   self.window.blit(sprite.map_country,(0,0))
+        self.window.blit(self.merged_country,(0,0))
+        for tmp in self.tmp:
+            self.window.blit(tmp,(0,0))
+        for texte in self.textes:
+            self.window.blit(texte[0],texte[1])
+        for t in self.t_hud:
+            self.window.blit(t[0],t[1])
+        for final in self.final_layer:
+            self.window.blit(final[0],final[1])
+        if self.functions != []:
+            for f in self.functions:
+                f()             # Display functions
+
     # This function manages the game.
     def display(self,fonction=None):
         colormap=ColorMap()
@@ -489,28 +510,11 @@ class CurrentWindow():
         # Display troops
         display_troops(self.textes,self.sprites_country,self.map)
 
-                # This is where the game logic is
+        # This is where the game logic is
         while self.display:
             self.key_presses()
-            for surface in self.surfaces:
-                self.window.blit(surface[0],surface[1])
-            for dice in self.dices:
-                self.window.blit(dice[0],dice[1])
-            #for sprite in self.sprites_country:
-            #   self.window.blit(sprite.map_country,(0,0))
-            self.window.blit(self.merged_country,(0,0))
-            for tmp in self.tmp:
-                self.window.blit(tmp,(0,0))
-            for texte in self.textes:
-                self.window.blit(texte[0],texte[1])
-            for t in self.t_hud:
-                self.window.blit(t[0],t[1])
-            for final in self.final_layer:
-                self.window.blit(final[0],final[1])
-            if self.functions != []:
-                for f in self.functions:
-                    f()             # Display functions
-
+           
+            self.draw() 
             # Victory screen for winning player
             if self.turns.players[self.turns.player_turn-1].obj.get_state()==True: # Not clean
                 self.final_layer=[]
