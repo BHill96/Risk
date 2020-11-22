@@ -347,7 +347,7 @@ class CurrentWindow():
                elif event.key == K_w: # Remove, debug func
                    self.turns.game_finish=True
                elif event.key == K_h:
-                   help_menu = not help_menu
+                   self.help_menu = not self.help_menu
                elif event.key == K_c:
                    self.tmp=[]
                    display_continent(self.turns.map.continents[id_c],self.tmp,sprites_country_masque)
@@ -474,6 +474,27 @@ class CurrentWindow():
             for f in self.functions:
                 f()             # Display functions
 
+    # Draws help menu
+    def draw_help(self):
+        self.final_layer=[]
+        win_screen = pygame.Surface(self.window.get_size())
+        win_screen = win_screen.convert()
+        win_screen.fill(colormap.black)
+        win_screen.set_alpha(180)
+        self.final_layer.append([win_screen,(0,0)])
+        display_help(self.final_layer,colormap)
+
+    # Checks for victory and ends the game if so
+    def check_victory(self):
+        if self.turns.players[self.turns.player_turn-1].obj.get_state()==True: # Not clean
+            self.final_layer=[]
+            win_screen = pygame.Surface(self.window.get_size())
+            win_screen = win_screen.convert()
+            win_screen.fill(colormap.black)
+            win_screen.set_alpha(180)
+            self.final_layer.append([win_screen,(0,0)])
+            display_win(self.final_layer,self.players)
+
     # This function manages the game.
     def display(self,fonction=None):
         colormap=ColorMap()
@@ -483,7 +504,7 @@ class CurrentWindow():
         self.sprite_select=-1
         glob_country=glob.glob(PATH_MAP+"*.png")
         self.sprites_country=[]
-        help_menu=False
+        self.help_menu=False
         id_c=0
         hide=True
         # Passing sprites
@@ -513,36 +534,16 @@ class CurrentWindow():
         # This is where the game logic is
         while self.display:
             self.key_presses()
-           
             self.draw() 
             # Victory screen for winning player
-            if self.turns.players[self.turns.player_turn-1].obj.get_state()==True: # Not clean
-                self.final_layer=[]
-                win_screen = pygame.Surface(self.window.get_size())
-                win_screen = win_screen.convert()
-                win_screen.fill(colormap.black)
-                win_screen.set_alpha(180)
-                self.final_layer.append([win_screen,(0,0)])
-                display_win(self.final_layer,self.players)
+            self.check_victory()
+            # Help screen
+            if self.help_menu:
+                self.draw_help()
             else:
-                # Help screen
-                if help_menu:
-                    self.final_layer=[]
-                    win_screen = pygame.Surface(self.window.get_size())
-                    win_screen = win_screen.convert()
-                    win_screen.fill(colormap.black)
-                    win_screen.set_alpha(180)
-                    self.final_layer.append([win_screen,(0,0)])
-                    display_help(self.final_layer,colormap)
-                else:
-                    self.final_layer=[]
+                self.final_layer=[]
 
-            #pygame.display.flip()
             mouse = pygame.mouse.get_pos()
-            #print(self.window.get_at((mouse[0], mouse[1])))
-            # Loop over countries
-            #for idx,sprite in enumerate(self.sprites_country):
-                #if sprite.bounds.x<mouse[0]<sprite.bounds.x+sprite.bounds.width and sprite.bounds.y<mouse[1]<sprite.bounds.y+sprite.bounds.height: 
             try:
                 mouse_color=self.surfaces[2][0].get_at((mouse[0],mouse[1]))
             except IndexError as e:
@@ -551,22 +552,11 @@ class CurrentWindow():
 
             try:
                 if mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255):
-                #if sprite.map_country.get_at((mouse[0],mouse[1])) != (0,0,0):
                     id_country_tmp=mouse_color[0]-100
-                    #print(id_country_tmp)
                     sp_msq=next((sp for sp in sprites_country_masque if sp.id == id_country_tmp), None)
-                    #print(sp_msq.id) 
-                    #print(sprite.id)
-                    # Mask created when mouse hovers over sprite
-                    # if sprite.id != self.sprite_select:
-                    #   sprite_bis=SpritePays(sprite.map_country.copy(),"00.png") # Not clean
-                    #   color_surface(sprite_bis,(1,1,1),150)
-                    #   self.window.blit(sprite_bis.map_country,(0,0))
-                    #   pygame.display.flip()
                     if id_country_tmp != self.sprite_select:
                         self.window.blit(sp_msq.map_country,(0,0))
                         pygame.display.update(sp_msq.map_country.get_rect())
-                        #pygame.display.update(sp_msq.bounds)
                     click = pygame.mouse.get_pressed()
                     phase = self.turns.list_phase[self.turns.phase]
                     if phase  == 'placement':
