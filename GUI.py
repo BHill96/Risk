@@ -636,7 +636,8 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     window = pygame.display.set_mode((f_w, f_h))
     Win=CurrentWindow(window,T)
-    Win.game.nb_players=3
+    Win.game.nb_players=0
+    Win.game.nb_ai=3
     Win.game.players=[T.players[0].name, T.players[1].name, T.players[2].name]
     Win.functions.append(Win.start_game)        # Init functions
     clock.tick(60)
