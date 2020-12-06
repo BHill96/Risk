@@ -619,7 +619,7 @@ if __name__ == '__main__':
     print("== Unit Tests ==")
     M=Map('Terre')
     Continents=M.continents
-    T=Turns(3,M)
+    T=Turns(0,M,3)
     T.start_deploy()
     print(T.distrib_country(M.country))
     T.print_players()
