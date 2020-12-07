@@ -21,12 +21,13 @@ class AI(Player):
       wars = self.__find_wars(attack=True)
       wars = sorted(wars, key=lambda war:war[2])
       # While reinforcments > 0:
+      print("troops",self.nb_troops)
       troops = self.nb_troops
       # Dict of country name:troops to add
       reinforce = {}
       while troops > 0:
         # Add troop to country with lowest chance
-        if wars[0][0].id != reinforce.keys():
+        if wars[0][0].id not in reinforce.keys():
           reinforce[wars[0][0].id] = 0
         reinforce[wars[0][0].id] += 1
         print("Added 1 to {0}".format(wars[0][0].name))

@@ -383,7 +383,7 @@ class CurrentWindow():
             if country.id_player==self.turns.player_turn:
                 # Update number of troops
                 self.turns.placer(country, self.nb_units)
-                pygame.time.wait(100) # Not clean
+                # pygame.time.wait(100) # Not clean
             else:
                 # Raise error
                 print('Country does not belong to player')
@@ -538,7 +538,16 @@ class CurrentWindow():
         # This is where the game logic is
         mouse_color = (0,0,0,0)
         print("Entering 'while self.display:'")
+        print('turn number:', self.turns.num, 'order', self.turns.order,'player turn', self.turns.order[self.turns.id_order])
+        print(self.turns.list_phase[self.turns.phase])
         while self.display:
+            #HUD
+            #print('Turn Number:', self.num,'Order',self.order,'Player Turn', self.ordre[self.id_ordre])
+            #print(self.list_phase[self.phase])
+            self.t_hud=[]
+            display_hud(self.nb_units,self.t_hud,self.turns,(75,self.sprites_country[0].map_country.get_height()+10),hide)
+            pygame.display.flip()
+            
             self.key_presses()
             self.draw() 
             # Victory screen for winning player
@@ -557,26 +566,33 @@ class CurrentWindow():
                 #print(e.args)
 
             try:
-                isAI = self.turns.players[self.turns._player_turn-1].is_ai
-                if (mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255)) or isAI:
+                # AI
+                phase = self.turns.list_phase[self.turns.phase]
+                if self.turns.players[self.turns.player_turn-1].is_ai:
+                  print(self.turns.players[self.turns.player_turn-1].name,"phase",phase)
+                  if phase == 'placement':
+                    placements = self.turns.players[self.turns.player_turn-1].placement()
+                    for country in placements.keys():
+                      print(placements[country])
+                      self.nb_units = placements[country]
+                      self.placement([1], country)
+                    print("Done placing for {0}".format(self.turns.players[self.turns.player_turn-1].name))
+                  #elif phase == 'attack':
+                  #elif phase == 'deplacement':
+                  # Display troops
+                  self.textes=[]
+                  display_troops(self.textes,self.sprites_country,self.map)
+                # User interaction
+                if mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255):
                     id_country_tmp=mouse_color[0]-100
                     sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == id_country_tmp), None)
                     if id_country_tmp != self.sprite_select:
                         self.window.blit(sp_msq.map_country,(0,0))
                         pygame.display.update(sp_msq.map_country.get_rect())
                     click = pygame.mouse.get_pressed()
-                    phase = self.turns.list_phase[self.turns.phase]
-                    print("phase",phase)
                     # print("self.turns._player_turn",self.turns._player_turn)
                     if phase == 'placement':
-                        if isAI:
-                          placements = self.turns.players[self.turns._player_turn-1].placement()
-                          for country in placements.keys():
-                            self.nb_units = placements[country]
-                            self.placement([1], country)
-                          print("Done placing for {0}".format(self.turns.players[self.turns._player_turn-1].name))
-                        else:
-                          self.placement(click, id_country_tmp)
+                        self.placement(click, id_country_tmp)
                     elif phase == 'attack':
                         self.attack(click, id_country_tmp, sp_msq)
                     elif phase == 'deplacement':
@@ -587,13 +603,6 @@ class CurrentWindow():
                     #break
             except ValueError as e:
                 pass # Not clean
-
-            #HUD
-            #print('Turn Number:', self.num,'Order',self.order,'Player Turn', self.ordre[self.id_ordre])
-            #print(self.list_phase[self.phase])
-            self.t_hud=[]
-            display_hud(self.nb_units,self.t_hud,self.turns,(75,self.sprites_country[0].map_country.get_height()+10),hide)
-            pygame.display.flip()
 
 def menu(Win):
     #useless?
