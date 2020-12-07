@@ -7,7 +7,7 @@ This file manages the AI's actions for the game.
 
 import random
 import copy
-from Player import Player
+from Player import *
 
 class AI(Player):
     def __init__(self,id,Map,turns):
