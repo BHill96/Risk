@@ -12,15 +12,15 @@ class Map():
         self.continents=[]
         self.nb_country=0
         if name=='Terre':
-            self.continents.append(Continent(['Congo','East Africa','Egypt','Madagascar','North Africe','South Africa']
+            self.continents.append(Continent(['Congo','East Africa','Egypt','Madagascar','North Africa','South Africa']
                                             ,3,'Africa',self))
             self.continents.append(Continent(['Alaska','Alberta','Central America','Eastern States','Greenland','North-West Territories','Ontario','Quebec','Western States']
                                             ,5,'North America',self))
             self.continents.append(Continent(['Venezuela','Brazil','Peru','Argentina']
                                             ,2,'South America',self))
-            self.continents.append(Continent(['Afghanistan','China','India','Tchita','Japan','Kamchatka','Middle East','Mongolia','Siam','Siberia','Urals','Yakutia']
+            self.continents.append(Continent(['Afghanistan','China','India','Irkutsk','Japan','Kamchatka','Middle East','Mongolia','Siam','Siberia','Urals','Yakutia']
                                             ,7,'Asia',self))
-            self.continents.append(Continent(['Great Britian','Island','Northern Europe','Scandinavia','Southern Europe','Ukraine','Western Europe']
+            self.continents.append(Continent(['Great Britian','Iceland','Northern Europe','Scandinavia','Southern Europe','Ukraine','Western Europe']
                                             ,5,'Europe',self))
             self.continents.append(Continent(['East Australia','Indonesia','New Guinea','West Australia']
                                             ,2,'Oceanic',self))

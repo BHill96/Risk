@@ -9,6 +9,7 @@ import random
 import copy
 from AI import *
 from Map import *
+
 # Types of missions(?) players are able to perform
 class Goal():
     def __init__(self,Map,turns):
@@ -243,7 +244,6 @@ class Turns():
                 self.phase=0
                 # Update number of troops available (reinforcments at beginning of turn)
                 self.players[self.player_turn-1].nb_troops+=self.players[self.player_turn-1].sbyturn
-
         else:
             # Next players turn
             self.id_order=(self.id_order+1)%len(self.order)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.4
 # -*- coding: utf-8 -*-
-#
+
 """
 This file creates the UI for the game risk. Comments have been translated from french to english,
 so they be slightly off.
@@ -537,6 +537,7 @@ class CurrentWindow():
 
         # This is where the game logic is
         mouse_color = (0,0,0,0)
+        print("Entering 'while self.display:'")
         while self.display:
             self.key_presses()
             self.draw() 
@@ -556,7 +557,8 @@ class CurrentWindow():
                 #print(e.args)
 
             try:
-                if mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255):
+                isAI = self.turns.players[self.turns._player_turn-1].is_ai
+                if (mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255)) or isAI:
                     id_country_tmp=mouse_color[0]-100
                     sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == id_country_tmp), None)
                     if id_country_tmp != self.sprite_select:
@@ -564,8 +566,17 @@ class CurrentWindow():
                         pygame.display.update(sp_msq.map_country.get_rect())
                     click = pygame.mouse.get_pressed()
                     phase = self.turns.list_phase[self.turns.phase]
-                    if phase  == 'placement':
-                        self.placement(click, id_country_tmp)
+                    print("phase",phase)
+                    # print("self.turns._player_turn",self.turns._player_turn)
+                    if phase == 'placement':
+                        if isAI:
+                          placements = self.turns.players[self.turns._player_turn-1].placement()
+                          for country in placements.keys():
+                            self.nb_units = placements[country]
+                            self.placement([1], country)
+                          print("Done placing for {0}".format(self.turns.players[self.turns._player_turn-1].name))
+                        else:
+                          self.placement(click, id_country_tmp)
                     elif phase == 'attack':
                         self.attack(click, id_country_tmp, sp_msq)
                     elif phase == 'deplacement':
