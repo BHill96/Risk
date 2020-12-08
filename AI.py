@@ -61,39 +61,55 @@ class AI(Player):
       # Find possible paths within contiguous territory 
       paths = self.__find_deplacement_paths()
       print("Paths:",paths)
-      return None
-
-      """# Find country with highest and lowest chances
-      high = wars[0]
-      low = wars[-1]
-      m = Map('Terre')
-      print("deplacement", high[0].name, low[0].name)
-      i = 1
-      while not m.chemin_exist(self.country, high[0], low[0]) and i < len(wars):
-        high = wars[i]
-        i += 1
-      if high[2] < threshold:
-        high = wars[0]
-        i = len(wars-2)
-        while not m.chemin_exist(self.country, high[0], low[0]) and i > 0:
-          low = wars[i]
-          i -= 1
-
-      print("Moving from {0} to {1}".format(high[0].name, low[0].name))
-      # Split reinforcments between the two
-      oldDiff = abs(high[2]-low[2])
-      move = [high[0].id, 1, low[0].id]
-      high, low = (high[0], high[1], high[2]-0.1), (low[0], low[1], low[2]+0.1)
-      newDiff = abs(high[2]-low[2])
-      print("  equalized odds from {0} to {1}".format(oldDiff, newDiff))
-      while newDiff < oldDiff:
-        oldDiff = newDiff
-        move[1] += 1
-        high, low = (high[0], high[1], high[2]-0.1), (low[0], low[1], low[2]+0.1)
-        newDiff = abs(high[2]-low[2])
-        print("  equalized odds from {0} to {1}".format(oldDiff, newDiff))
-      # Return pair of (country, reinforcments) pairs
-      return move"""
+      # Find possible deplacement based on most secure country
+      tmp1 = []
+      for path in paths:
+        if wars[-1][0].id in path:
+          for war in wars[:len(wars)-1]:
+            if war[0].id in path and war[0].id != wars[-1][0].id:
+              tmp1 = [wars[-1], war]
+              break
+      if tmp1:
+        gap1 = tmp1[0][2]-tmp1[1][2]
+      else:
+        gap1 = -1
+      # Find possible deplacement based on least secure country
+      tmp2 = []
+      for path in paths:
+        if wars[0][0].id in path:
+          for war in wars[0:]:
+            if war[0].id in path and war[0].id != wars[0][0].id:
+              tmp2 = [wars[0], war]
+              break
+      if tmp2:
+        gap2 = tmp2[1][2]-tmp2[0][2]
+      else:
+        gap2 = -1
+      # Find best deplacement by picking largest success difference
+      if gap2 > gap1:
+        high = tmp2[1]
+        low = tmp2[0]
+        gap = gap2
+      elif gap2 < gap1:
+        high = tmp1[0]
+        low = tmp1[1]
+        gap = gap1
+      else:
+        # No need to displace troops
+        return (None, None, -1)
+      # Begin moving troops until success is about equal
+      high = (high[0], high[1], high[2]-0.1)
+      low = (low[0], low[1], low[2]+0.1)
+      newGap = high[2]-low[2]
+      amount = 1
+      while newGap > 0:
+        high = (high[0], high[1], high[2]-0.1)
+        low = (low[0], low[1], low[2]+0.1)
+        newGap = high[2]-low[2]
+        amount += 1
+      if amount > high[0].nb_troops-1:
+        amount = high[0].nb_troops-1
+      return (high[0].id, low[0].id, amount)
 
     # Finds paths within contiguous country groups
     def __find_deplacement_paths(self):
@@ -108,7 +124,6 @@ class AI(Player):
             if n != c and self.map.chemin_exist(self.country, country, self.__find_country(n)):
               tmp.append(n)
               used.append(n)
-            else:
           if len(tmp) > 1:
             reachable.append(tmp)
       return reachable

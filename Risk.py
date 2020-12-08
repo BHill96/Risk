@@ -194,10 +194,8 @@ class Turns():
         self._player_turn=self.order[self.id_order]
 
     def next(self):
-        print("in next")
         if self.players[self.player_turn-1].nb_troops>0:
             raise ValueError('Need to deploy',self.players[self.player_turn-1].nb_troops)
-        print("num",self.num,"id order",self.id_order)
         if self.num==0: # Initial placement phase
             self.id_order=(self.id_order+1)%len(self.order)
             if self.id_order==0:
@@ -359,12 +357,9 @@ class Turns():
         country_dest.nb_troops+=nb_troops
 
     def placer(self,country,nb_troops):
-        print("in placer")
         # Decrease counter when player places a troop
         player=next((p for p in self.players if p.id == country.id_player), None)
-        print("Troops:",player.nb_troops, nb_troops)
         if (player.nb_troops-nb_troops<=0):
-            print("time to change players")
             country.nb_troops+=player.nb_troops
             player.nb_troops-=player.nb_troops
             self.next()

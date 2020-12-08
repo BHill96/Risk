@@ -29,6 +29,9 @@ DICE_SIZE=25
 f_w=1280
 f_h=800
 
+# For debugging
+SEC = 2
+
 class ColorMap():
     def __init__(self):
         self.green=(0,255,0)
@@ -435,6 +438,8 @@ class CurrentWindow():
 
     # This function manages the deplacement phase
     def deplacement(self, _click, _sp_msq, _id_country_tmp):
+        print("in deplacement")
+        print("  ",_click[0],self.select)
         if _click[0]==1 and not self.select:
             self.country_select=next((p for p in self.map.country if p.id == _id_country_tmp), None)
             if self.country_select.id_player==self.turns.player_turn and self.country_select.nb_troops>1:
@@ -538,9 +543,9 @@ class CurrentWindow():
         # This is where the game logic is
         mouse_color = (0,0,0,0)
         print("Entering 'while self.display:'")
-        print('turn number:', self.turns.num, 'order', self.turns.order,'player turn', self.turns.order[self.turns.id_order])
-        print(self.turns.list_phase[self.turns.phase])
         while self.display:
+            #print('turn number:', self.turns.num, 'order', self.turns.order,'player turn', self.turns.order[self.turns.id_order])
+            #print(self.turns.list_phase[self.turns.phase])
             #HUD
             #print('Turn Number:', self.num,'Order',self.order,'Player Turn', self.ordre[self.id_ordre])
             #print(self.list_phase[self.phase])
@@ -578,10 +583,26 @@ class CurrentWindow():
                       self.placement([1], country)
                     print("Done placing for {0}".format(self.turns.players[self.turns.player_turn-1].name))
                   #elif phase == 'attack':
-                  #elif phase == 'deplacement':
+                  elif phase == 'deplacement':
+                    deplacement = self.turns.players[self.turns.player_turn-1].deplacement()
+                    if deplacement[2] <= 0:
+                      print("Deplacement == {0}".format(deplacement[2]))
+                      self.turns.next()
+                    else:
+                      print("{0}::{1}::{2}".format(deplacement[0], deplacement[1], deplacement[2]))
+                      sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == deplacement[0]), None)
+                      print("  deplacement call 1")
+                      self.deplacement([1], sp_msq, deplacement[0])
+                      sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == deplacement[1]), None)
+                      print("  deplacement call 2")
+                      self.nb_units = deplacement[2]
+                      self.deplacement([1], sp_msq, deplacement[1])
+                    print("done deplacement")
                   # Display troops
                   self.textes=[]
                   display_troops(self.textes,self.sprites_country,self.map)
+                  # for debugging
+                  pygame.time.wait(1000*SEC)
                 # User interaction
                 if mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255):
                     id_country_tmp=mouse_color[0]-100
@@ -602,7 +623,8 @@ class CurrentWindow():
                     display_troops(self.textes,self.sprites_country,self.map)
                     #break
             except ValueError as e:
-                pass # Not clean
+              print("ERROR::{0}".format(e))
+              pass # Not clean
 
 def menu(Win):
     #useless?
