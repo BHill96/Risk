@@ -439,7 +439,6 @@ class CurrentWindow():
     # This function manages the deplacement phase
     def deplacement(self, _click, _sp_msq, _id_country_tmp):
         print("in deplacement")
-        print("  ",_click[0],self.select)
         if _click[0]==1 and not self.select:
             self.country_select=next((p for p in self.map.country if p.id == _id_country_tmp), None)
             if self.country_select.id_player==self.turns.player_turn and self.country_select.nb_troops>1:
@@ -554,7 +553,8 @@ class CurrentWindow():
             pygame.display.flip()
             
             self.key_presses()
-            self.draw() 
+            self.draw()
+            pygame.time.wait(100) 
             # Victory screen for winning player
             self.check_victory()
             # Help screen
@@ -578,7 +578,6 @@ class CurrentWindow():
                   if phase == 'placement':
                     placements = self.turns.players[self.turns.player_turn-1].placement()
                     for country in placements.keys():
-                      print(placements[country])
                       self.nb_units = placements[country]
                       self.placement([1], country)
                     print("Done placing for {0}".format(self.turns.players[self.turns.player_turn-1].name))
@@ -591,10 +590,8 @@ class CurrentWindow():
                     else:
                       print("{0}::{1}::{2}".format(deplacement[0], deplacement[1], deplacement[2]))
                       sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == deplacement[0]), None)
-                      print("  deplacement call 1")
                       self.deplacement([1], sp_msq, deplacement[0])
                       sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == deplacement[1]), None)
-                      print("  deplacement call 2")
                       self.nb_units = deplacement[2]
                       self.deplacement([1], sp_msq, deplacement[1])
                     print("done deplacement")

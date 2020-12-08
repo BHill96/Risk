@@ -9,6 +9,7 @@ import random
 import copy
 from Player import *
 from Map import *
+from War_MC import *
 
 class AI(Player):
     def __init__(self,id,Map,turns):
@@ -18,6 +19,7 @@ class AI(Player):
     # This calculates the optimal placement strategy by improving the average chance of success for attacks
     # by increasing the number of troops with the lowest odds
     def placement(self):
+      print("  AI Placement")
       # self.__find_wars(attack=True)
       wars = self.__find_wars(attack=True)
       wars = sorted(wars, key=lambda war:war[2])
@@ -26,17 +28,28 @@ class AI(Player):
       # Dict of country name:troops to add
       reinforce = {}
       while troops > 0:
+        # For debugging
+        #self.__print_wars(wars)
         # Add troop to country with lowest chance
         if wars[0][0].id not in reinforce.keys():
           reinforce[wars[0][0].id] = 0
         reinforce[wars[0][0].id] += 1
-        print("Added 1 to {0}".format(wars[0][0].name))
         troops -= 1
         # Recalculate odds and re-sort
-        wars[0] = (wars[0][0], wars[0][1], wars[0][2]+0.01)
+        wmc = War_MC(wars[0][0].nb_troops+reinforce[wars[0][0].id]-1, wars[0][1].nb_troops)
+        wars[0] = (wars[0][0], wars[0][1], wmc.p)
         wars = sorted(wars, key=lambda war:war[2])
       # Return dict of (country, reinforcment) pairs
+      print("Reinforcing")
+      for k in reinforce.keys():
+        print("  {0}::{1}".format(self.__find_country(k).name, reinforce[k]))
       return reinforce
+
+    # for debugging
+    def __print_wars(self, wars):
+      print("    Wars:")
+      for w in wars:
+        print("      {0}, {1}, {2}".format(w[0].name, w[1].name, w[2]))
 
     def attack(self):
       """
@@ -54,7 +67,7 @@ class AI(Player):
       """
 
     def deplacement(self):
-      print("AI deplacement")
+      print("  AI deplacement")
       # Find wars and success rates
       wars = self.__find_wars(attack=False)
       wars = sorted(wars, key=lambda war:war[2])
@@ -89,26 +102,23 @@ class AI(Player):
       if gap2 > gap1:
         high = tmp2[1]
         low = tmp2[0]
-        gap = gap2
       elif gap2 < gap1:
         high = tmp1[0]
         low = tmp1[1]
-        gap = gap1
       else:
         # No need to displace troops
         return (None, None, -1)
       # Begin moving troops until success is about equal
-      high = (high[0], high[1], high[2]-0.1)
-      low = (low[0], low[1], low[2]+0.1)
-      newGap = high[2]-low[2]
-      amount = 1
+      newGap = high[0].nb_troops-1
+      amount = 0
       while newGap > 0:
-        high = (high[0], high[1], high[2]-0.1)
-        low = (low[0], low[1], low[2]+0.1)
-        newGap = high[2]-low[2]
+        lowWmc = War_MC(low[1].nb_troops-1, low[0].nb_troops+amount)
+        highWmc = War_MC(high[1].nb_troops-1, high[0].nb_troops-amount)
+        newGap = highWmc.p - lowWmc.p
         amount += 1
-      if amount > high[0].nb_troops-1:
-        amount = high[0].nb_troops-1
+        if amount >= high[0].nb_troops-1:
+          amount = high[0].nb_troops-1
+          break
       return (high[0].id, low[0].id, amount)
 
     # Finds paths within contiguous country groups
@@ -134,18 +144,20 @@ class AI(Player):
       wars = []
       # For each country:
       for c in self.country:
-        country=self.__find_country(c)
+        country = self.__find_country(c)
         # For each enemy neighbor:
         for n in country.neighbor:
-          neighbor=self.__find_country(n)
+          neighbor = self.__find_country(n)
           if country.id_player != neighbor.id_player:
             # Find chance of winning war
             if attack:
               # Success based on attack
-              success_chance = random.uniform(0,1)
+              wmc = War_MC(country.nb_troops-1, neighbor.nb_troops)
+              success_chance = wmc.p
             else:
               # Success based on defense
-              success_chance = random.uniform(0,1)
+              wmc = War_MC(neighbor.nb_troops-1, country.nb_troops)
+              success_chance = 1-wmc.p
             # save (neighbor, chance of success)
             wars.append((country, neighbor, success_chance))
       # return list of pairs
