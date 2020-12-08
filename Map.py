@@ -38,7 +38,7 @@ class Map():
             self.continents[1].country[5].neighbor=[7,8,13,11]
             self.continents[1].country[6].neighbor=[8,15,10,14,11,12]
             self.continents[1].country[7].neighbor=[10,13,11]
-            self.continents[1].country[8].neighbor=[9,10,8,13]
+            self.continents[1].country[8].neighbor=[9,10,8,13,12]
             self.continents[2].country[0].neighbor=[17,18]
             self.continents[2].country[1].neighbor=[16,18,19,5]
             self.continents[2].country[2].neighbor=[16,17,19]
@@ -77,10 +77,8 @@ class Map():
             country_reachable.append(country1.id)
             self.path_length(country1,country_player,country_reachable)
             if country2.id in country_reachable:
-                print('a path exists')
                 return True
             else:
-                print('no path')
                 return False
         else:
             print('The countryn\' is not the player')
