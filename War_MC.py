@@ -21,15 +21,10 @@ class War_MC():
     self.F = [] # matrix F = (I-Q)^-1 *R
     self.i = [] # Identity matrix
     self.p = 0 # probaility that the attacker wins
-    self.l = [] # number of lossing attacker and defender from each states 
-                # to absorbing states
-    self.EdefL = 0 # Expected number of lossing defenders
-    self.EatkL = 0 # Expected number of lossing attackers
     # Configure MC
     self.__cal_states()
     self.__cal_mx()
     self.__cal_p()
-    print("   in init A::{0} D::{1} p::{2}".format(self.attacker, self.defender, self.p))
 
   def get_data(self):
     print('Test("%s","%s","%s")' % (self.q, self.r, self.F ))
@@ -63,25 +58,34 @@ class War_MC():
       self.p = sum(self.F.iloc[self.attacker*self.defender-1]
                    [len(self.F.iloc[self.attacker*self.defender-1])-self.attacker:])
     
-  def losses(self): 
+  # number of lossing attacker and defender from each states to absorbing states
+  def __losses(self):
+    l = [] 
     for (x,y) in self.ab_states:
-      self.l.append((self.attacker-x, self.defender-y))
+      l.append((self.attacker-x, self.defender-y))
+    return l
 
   # Calculate the expected of lossing defender.
-  def e_def_loss(self):
+  def expected_loss_def(self):
+    if self.attacker>0:
       d_l = []
-      for (x,y) in self.l:
+      for (x,y) in self.__losses():
         d_l.append(y)
       pb = list(self.F.iloc[self.attacker*self.defender-1])
-      self.EdefL = np.dot(d_l,pb)
+      return np.dot(d_l,pb)
+    else:
+      return 0
 
   # Calculate the expected of lossing attacker
-  def e_atk_loss(self):
-    d_l = []
-    for (x,y) in self.l:
-       d_l.append(x)
-    pb = list(self.F.iloc[self.attacker*self.defender-1])
-    self.EatkL = np.dot(d_l,pb)
+  def expected_loss_atk(self):
+    if self.attacker>0:
+      d_l = []
+      for (x,y) in self.__losses():
+        d_l.append(x)
+      pb = list(self.F.iloc[self.attacker*self.defender-1])
+      return np.dot(d_l,pb)
+    else:
+      return 0
 
   # Creates transition matrix
   def __cal_prob(self, states1, states2):

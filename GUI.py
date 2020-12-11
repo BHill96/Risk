@@ -400,7 +400,7 @@ class CurrentWindow():
               self.tmp.append(_sp_msq.map_country)
               self.select=True 
               self.sprite_select=_id_country_tmp
-        elif _click[0]==1: # Selection of attacking country
+        elif _click[0]==1: # Selection of defending country
             country2=next((p for p in self.map.country if p.id == _id_country_tmp), None)
             if self.atck_winmove and country2 == self.country_atck and self.country_select.nb_troops>1: # Move troops after successful attack
                 self.turns.deplacer(self.country_select, country2, self.nb_units)
@@ -581,7 +581,21 @@ class CurrentWindow():
                       self.nb_units = placements[country]
                       self.placement([1], country)
                     print("Done placing for {0}".format(self.turns.players[self.turns.player_turn-1].name))
-                  #elif phase == 'attack':
+                  elif phase == 'attack':
+                    attack = self.turns.players[self.turns.player_turn-1].attack()
+                    print("Final Attack Path:")
+                    for a in attack:
+                      print("  {0}::{1}::{2}".format(a[0].name, a[1].name, a[2]))
+                      sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == a[0].id), None)
+                      self.attack([1], a[0].id, sp_msq)
+                      sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == a[1].id), None)
+                      self.attack([1], a[1].id, sp_msq)
+                      if self.atck_winmove:
+                        self.nb_units = a[0].nb_troops-1
+                        self.attack([1], a[1].id, sp_msq)
+                      else:
+                        break
+                    self.turns.next()
                   elif phase == 'deplacement':
                     deplacement = self.turns.players[self.turns.player_turn-1].deplacement()
                     if deplacement[2] <= 0:
