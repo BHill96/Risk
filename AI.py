@@ -23,7 +23,7 @@ class AI(Player):
     # This calculates the optimal placement strategy by improving the average chance of success for attacks
     # by increasing the number of troops with the lowest odds
     def placement(self):
-      print("  AI Placement")
+      #print("  AI Placement")
       # self.__find_wars(attack=True)
       wars = []
       for c in self.country:
@@ -51,7 +51,7 @@ class AI(Player):
       # Return dict of (country, reinforcment) pairs
       print("Reinforcing")
       for k in reinforce.keys():
-        print("  {0}::{1}".format(self.__find_country(k).name, reinforce[k]))
+        print("  {2}::{0}::{1}".format(self.__find_country(k).name, reinforce[k], k))
       return reinforce
 
     # for debugging
@@ -61,14 +61,15 @@ class AI(Player):
         print("      {0}, {1}, {2}".format(w[0].name, w[1].name, w[2]))
 
     def __UCB1(self, node):
+      if node.visits == 0:
+        raise ValueError("NODE.VISITS CONTAINS 0!")
       return node.result+np.sqrt(4*np.log(node.parent.visits)/np.log(node.visits))
 
     # Explores the tree for MCTS
     def __tree_policy(self):
-      print("  Tree Policy")
+      #print("  Tree Policy")
       node = self.MCTS
       while len(node.possChildren) == 0 and len(node.children) != 0:
-        print("    possible children::{0}".format(len(node.possChildren)))
         bestChild = node.children[0]
         bestScore = self.__UCB1(bestChild)
         for child in node.children[1:]:
@@ -81,7 +82,7 @@ class AI(Player):
       return node
 
     def __expand(self, node):
-      print("  In expand::{0}".format(len(node.possChildren)))
+      #print("  In expand")
       if len(node.possChildren) != 0:
         i = random.randrange(0, len(node.possChildren), 1)
         # possChildren stores wars. This needs to be converted to a new node.
@@ -89,7 +90,7 @@ class AI(Player):
       return node
 
     def __simulate(self, node):
-      print("  In Simulate")
+      #print("  In Simulate")
       while len(node.possChildren) != 0:
         i = random.randrange(0, len(node.possChildren), 1)
         node = node.create_child(i, link=False, thresh=self.threshhold)
@@ -105,14 +106,14 @@ class AI(Player):
       return result/count
 
     def __backtrack(self, node, result):
-      print("    In backtrack")
+      #print("    In backtrack")
       while node.parent:
         node.result = (node.result*node.visits+result)/(node.visits+1)
         node.visits += 1
         node = node.parent
  
     def attack(self):
-      print("  Attack")
+      #print("  Attack")
       # create list of wars from self.__find_wars(attack=True)
       self.MCTS = Node(self.map, self.country, None, thresh=self.threshhold)
       # while time:
@@ -132,8 +133,8 @@ class AI(Player):
       # return path
       path = []
       node = self.MCTS
-      print("    Picking Best path...")
-      print("    number of children::{0}".format(len(node.children)))
+      #print("    Picking Best path...")
+      #print("    number of children::{0}".format(len(node.children)))
       while len(node.children) != 0:
         score = 0
         bestChild = None
@@ -142,7 +143,7 @@ class AI(Player):
           if score < tmpScore:
             score = tmpScore
             bestChild = child
-          print("  best score::{0} move::{1}::{2}".format(score, bestChild.move[0].name, bestChild.move[1].name))
+          #print("  best score::{0} move::{1}::{2}".format(score, bestChild.move[0].name, bestChild.move[1].name))
         path.append(bestChild.move)
         node = bestChild
        
@@ -152,7 +153,7 @@ class AI(Player):
       return path
 
     def deplacement(self):
-      print("  AI deplacement")
+      #print("  AI deplacement")
       # Find wars and success rates
       wars = []
       for c in self.country:
@@ -163,7 +164,7 @@ class AI(Player):
       wars = sorted(wars, key=lambda war:war[2])
       # Find possible paths within contiguous territory 
       paths = self.__find_deplacement_paths()
-      print("Paths:",paths)
+      #print("Paths:",paths)
       # Find possible deplacement based on most secure country
       tmp1 = []
       for path in paths:
@@ -267,7 +268,7 @@ class AI(Player):
 
 class Node():
   def __init__(self, Map, countries, move, thresh):
-    print("  In Node Init")
+    #print("  In Node Init")
     # List of Nodes
     self.children = []
     self.parent = None

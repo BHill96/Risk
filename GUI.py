@@ -217,9 +217,9 @@ def display_hud(nb_units,t_hud,turns,pos,hide):
         textRect.topleft = pos
         t_hud.append([textSurf, textRect])
 
-def display_continent(cont,temp_layer):
+def display_continent(cont,temp_layer,sprites_country_masque):
     for p in cont.country:
-        temp_layer.append(next((x.map_country for x in self.sprites_country_masque if x.id == p.id), None))
+        temp_layer.append(next((x.map_country for x in sprites_country_masque if x.id == p.id), None))
 
 def save_game(obj_lst):
     # Saving the objects:
@@ -554,7 +554,8 @@ class CurrentWindow():
             
             self.key_presses()
             self.draw()
-            pygame.time.wait(100) 
+            # for debugging
+            pygame.time.wait(1000*SEC)
             # Victory screen for winning player
             self.check_victory()
             # Help screen
@@ -612,8 +613,6 @@ class CurrentWindow():
                   # Display troops
                   self.textes=[]
                   display_troops(self.textes,self.sprites_country,self.map)
-                  # for debugging
-                  pygame.time.wait(1000*SEC)
                 # User interaction
                 if mouse_color != (0,0,0,0) and mouse_color != (0,0,0,255):
                     id_country_tmp=mouse_color[0]-100

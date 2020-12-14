@@ -12,60 +12,60 @@ class Map():
         self.continents=[]
         self.nb_country=0
         if name=='Terre':
+            # Label Countries by continent
+            self.continents.append(Continent(['Alaska','Alberta','Central America','Eastern States','Greenland','Northwest Territories',
+                                              'Ontario','Quebec','Western States'],5,'North America',self))
+            self.continents.append(Continent(['Argentina','Brazil','Peru','Venezuela'],2,'South America',self))
+            self.continents.append(Continent(['Great Britian','Iceland','Northern Europe','Scandinavia','Southern Europe','Ukraine',
+                                              'Western Europe'],5,'Europe',self))
             self.continents.append(Continent(['Congo','East Africa','Egypt','Madagascar','North Africa','South Africa']
-                                            ,3,'Africa',self))
-            self.continents.append(Continent(['Alaska','Alberta','Central America','Eastern States','Greenland','North-West Territories','Ontario','Quebec','Western States']
-                                            ,5,'North America',self))
-            self.continents.append(Continent(['Venezuela','Brazil','Peru','Argentina']
-                                            ,2,'South America',self))
-            self.continents.append(Continent(['Afghanistan','China','India','Irkutsk','Japan','Kamchatka','Middle East','Mongolia','Siam','Siberia','Urals','Yakutia']
-                                            ,7,'Asia',self))
-            self.continents.append(Continent(['Great Britian','Iceland','Northern Europe','Scandinavia','Southern Europe','Ukraine','Western Europe']
-                                            ,5,'Europe',self))
-            self.continents.append(Continent(['East Australia','Indonesia','New Guinea','West Australia']
-                                            ,2,'Oceanic',self))
-            self.continents[0].country[0].neighbor=[2,5,6]
-            self.continents[0].country[1].neighbor=[1,3,4,5,26]
-            self.continents[0].country[2].neighbor=[2,5,36,26]
-            self.continents[0].country[3].neighbor=[2,6]
-            self.continents[0].country[4].neighbor=[1,2,3,17,36,38]
-            self.continents[0].country[5].neighbor=[1,2,4]
-            self.continents[1].country[0].neighbor=[8,12,25]
-            self.continents[1].country[1].neighbor=[7,12,13,15]
-            self.continents[1].country[2].neighbor=[15,10,19] # Central
-            self.continents[1].country[3].neighbor=[9,15,13,14] # 10?
-            self.continents[1].country[4].neighbor=[12,13,14,33]
-            self.continents[1].country[5].neighbor=[7,8,13,11]
-            self.continents[1].country[6].neighbor=[8,15,10,14,11,12]
-            self.continents[1].country[7].neighbor=[10,13,11]
-            self.continents[1].country[8].neighbor=[9,10,8,13,12]
-            self.continents[2].country[0].neighbor=[17,18]
-            self.continents[2].country[1].neighbor=[16,18,19,5]
-            self.continents[2].country[2].neighbor=[16,17,19]
-            self.continents[2].country[3].neighbor=[18,17,9] # Argentine
-            self.continents[3].country[0].neighbor=[21,22,26,30,37] # 20
-            self.continents[3].country[1].neighbor=[20,22,28,27,29,30]
-            self.continents[3].country[2].neighbor=[20,21,26,28]
-            self.continents[3].country[3].neighbor=[29,27,25,31]
-            self.continents[3].country[4].neighbor=[27,25]
-            self.continents[3].country[5].neighbor=[31,23,27,24,7]
-            self.continents[3].country[6].neighbor=[20,22,37,2,3]
-            self.continents[3].country[7].neighbor=[24,21,29,25,23]
-            self.continents[3].country[8].neighbor=[21,22,40]
-            self.continents[3].country[9].neighbor=[30,21,23,31,27]
-            self.continents[3].country[10].neighbor=[20,21,29,37] # 30
-            self.continents[3].country[11].neighbor=[29,23,25]
-            self.continents[4].country[0].neighbor=[33,35,34,38]
-            self.continents[4].country[1].neighbor=[32,35,11]
-            self.continents[4].country[2].neighbor=[32,35,37,36,38]
-            self.continents[4].country[3].neighbor=[37,32,33,34]
-            self.continents[4].country[4].neighbor=[38,34,37,3,26,5]
-            self.continents[4].country[5].neighbor=[35,34,36,20,26,30]
-            self.continents[4].country[6].neighbor=[32,34,36,5]
-            self.continents[5].country[0].neighbor=[42,41]
-            self.continents[5].country[1].neighbor=[42,41,28] # 40
-            self.continents[5].country[2].neighbor=[42,40,39]
-            self.continents[5].country[3].neighbor=[39,41,40]
+                                              ,3,'Africa',self))
+            self.continents.append(Continent(['Afghanistan','China','India','Irkutsk','Japan','Kamchatka','Middle East','Mongolia','Siam',
+                                              'Siberia','Urals','Yakutsk'],7,'Asia',self))
+            self.continents.append(Continent(['East Australia','Indonesia','New Guinea','West Australia'],2,'Australia',self))
+            # Create Neighbors
+            self.continents[0].country[0].neighbor=[2,6,32] # N. America
+            self.continents[0].country[1].neighbor=[1,6,7,9]
+            self.continents[0].country[2].neighbor=[4,9,13]
+            self.continents[0].country[3].neighbor=[3,7,8,9]
+            self.continents[0].country[4].neighbor=[6,7,8,15]
+            self.continents[0].country[5].neighbor=[1,2,5,7]
+            self.continents[0].country[6].neighbor=[2,4,5,6,8,9]
+            self.continents[0].country[7].neighbor=[2,5,7]
+            self.continents[0].country[8].neighbor=[2,3,4,7]
+            self.continents[1].country[0].neighbor=[11,12] # S. America
+            self.continents[1].country[1].neighbor=[10,12,13,25]
+            self.continents[1].country[2].neighbor=[10,11,13]
+            self.continents[1].country[3].neighbor=[3,11,12]
+            self.continents[2].country[0].neighbor=[15,16,17,20] # Europe
+            self.continents[2].country[1].neighbor=[5,14,17]
+            self.continents[2].country[2].neighbor=[14,17,18,19,20]
+            self.continents[2].country[3].neighbor=[13,14,15,18]
+            self.continents[2].country[4].neighbor=[16,19,20,23,25]
+            self.continents[2].country[5].neighbor=[16,17,18,27,33,37]
+            self.continents[2].country[6].neighbor=[13,15,17,25]
+            self.continents[3].country[0].neighbor=[22,25,26] # Africa
+            self.continents[3].country[1].neighbor=[21,23,24,25,26,33]
+            self.continents[3].country[2].neighbor=[18,22,25,33]
+            self.continents[3].country[3].neighbor=[22,26]
+            self.continents[3].country[4].neighbor=[11,18,20,21,22,23]
+            self.continents[3].country[5].neighbor=[21,22,24]
+            self.continents[4].country[0].neighbor=[19,28,29,33,37] # Asia
+            self.continents[4].country[1].neighbor=[27,30,32,35,36,37,38]
+            self.continents[4].country[2].neighbor=[27,28,33,35]
+            self.continents[4].country[3].neighbor=[32,34,36,38]
+            self.continents[4].country[4].neighbor=[32,34]
+            self.continents[4].country[5].neighbor=[1,30,31,34,38]
+            self.continents[4].country[6].neighbor=[18,19,22,23,27,29]
+            self.continents[4].country[7].neighbor=[28,30,31,32,36]
+            self.continents[4].country[8].neighbor=[28,29,40]
+            self.continents[4].country[9].neighbor=[28,30,34,37,38]
+            self.continents[4].country[10].neighbor=[19,27,28,36]
+            self.continents[4].country[11].neighbor=[30,32,36]
+            self.continents[5].country[0].neighbor=[41,42] # Australia
+            self.continents[5].country[1].neighbor=[35,41,42]
+            self.continents[5].country[2].neighbor=[39,40,42]
+            self.continents[5].country[3].neighbor=[39,40,41]
 
     def print_country(self):
         for country in self.country:
