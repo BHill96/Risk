@@ -217,9 +217,9 @@ def display_hud(nb_units,t_hud,turns,pos,hide):
         textRect.topleft = pos
         t_hud.append([textSurf, textRect])
 
-def display_continent(cont,temp_layer,sprites_country_masque):
+def display_continent(cont,temp_layer):
     for p in cont.country:
-        temp_layer.append(next((x.map_country for x in sprites_country_masque if x.id == p.id), None))
+        temp_layer.append(next((x.map_country for x in self.sprites_country_masque if x.id == p.id), None))
 
 def save_game(obj_lst):
     # Saving the objects:
@@ -518,7 +518,6 @@ class CurrentWindow():
         self.select=False
         self.atck_winmove=False
         self.sprite_select=-1
-        glob_country=glob.glob(PATH_MAP+"*.png")
         self.sprites_country=[]
         self.help_menu=False
         id_c=0
@@ -526,6 +525,7 @@ class CurrentWindow():
         # Passing sprites
         self.sprites_country_masque=[]
         # Changing country sprites
+        glob_country=glob.glob(PATH_MAP+"*.png")
         self.load_sprites(glob_country)
 
         # Color countries by player color
