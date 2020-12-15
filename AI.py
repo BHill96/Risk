@@ -63,6 +63,8 @@ class AI(Player):
     def __UCB1(self, node):
       if node.visits == 0:
         raise ValueError("NODE.VISITS CONTAINS 0!")
+      elif node.parent.visits == 0:
+        raise ValueError("NODE.PARENT.VISITS CONTAINS 0!")
       return node.result+np.sqrt(4*np.log(node.parent.visits)/np.log(node.visits))
 
     # Explores the tree for MCTS
@@ -77,6 +79,7 @@ class AI(Player):
           if score > bestScore:
             bestScore = score
             bestChild = child
+        # For debugging
         oldNode = node
         node = bestChild
       return node
@@ -107,15 +110,16 @@ class AI(Player):
 
     def __backtrack(self, node, result):
       #print("    In backtrack")
-      while node.parent:
+      while node:
         node.result = (node.result*node.visits+result)/(node.visits+1)
-        node.visits += 1
+        node.visits = node.visits + 1
+        #print("      {0}::{1}".format(node.result, node.visits))
         node = node.parent
  
     def attack(self):
       #print("  Attack")
       # create list of wars from self.__find_wars(attack=True)
-      self.MCTS = Node(self.map, self.country, None, thresh=self.threshhold)
+      self.MCTS = Node(self.id, self.map, self.country, None, thresh=self.threshhold)
       # while time:
       iterations = 0
       startTime = perf_counter()
@@ -146,7 +150,6 @@ class AI(Player):
           #print("  best score::{0} move::{1}::{2}".format(score, bestChild.move[0].name, bestChild.move[1].name))
         path.append(bestChild.move)
         node = bestChild
-       
 
       self.MCTS = None
       print("  AI attack took {0} iterations".format(iterations))
@@ -267,7 +270,7 @@ class AI(Player):
       return next((p for p in self.map.country if p.id == countryID), None)
 
 class Node():
-  def __init__(self, Map, countries, move, thresh):
+  def __init__(self, playerID, Map, countries, move, thresh):
     #print("  In Node Init")
     # List of Nodes
     self.children = []
@@ -276,7 +279,9 @@ class Node():
     # The result to be backtracked is the average chance of success defending an attack
     self.result = 0
     self.map = copy.deepcopy(Map)
-    self.countries = copy.deepcopy(countries)
+    self.countries = []
+    self.playerID = playerID
+    self.__find_player_countries()
     # The war which created this node
     # (our country, enemy country, attack success rate)
     self.move = move
@@ -316,7 +321,7 @@ class Node():
 
   def create_child(self, i, thresh, link=False):
     #print("    in create_child::{0}".format(link))
-    newNode = Node(self.map, self.countries, self.possChildren.pop(i), thresh)
+    newNode = Node(self.playerID, self.map, self.countries, self.possChildren.pop(i), thresh)
     if link:
       newNode.parent = self
       self.children.append(newNode)
@@ -348,3 +353,8 @@ class Node():
     
   def __find_country(self, countryID):
     return next((p for p in self.map.country if p.id == countryID), None)
+
+  def __find_player_countries(self):
+    for c in self.map.country:
+      if c.id_player == self.playerID:
+        self.countries.append(self.playerID)
