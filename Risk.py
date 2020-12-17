@@ -267,7 +267,7 @@ class Turns():
         else:
             #throw execption
             print('Number of players invalid')
-        print("start_deploy:",nb_troops)
+        #print("start_deploy:",nb_troops)
         for p in self.players:
             p.nb_troops=nb_troops
 
