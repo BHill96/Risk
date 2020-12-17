@@ -1,0 +1,10 @@
+name: risk
+channels:
+  - defaults
+dependencies:
+  - python=3.5.6
+  - pandas
+  - numpy
+  - pip:
+    - pip==20.2.3
+    - pygame==1.9.6
