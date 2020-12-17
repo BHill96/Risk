@@ -357,4 +357,4 @@ class Node():
   def __find_player_countries(self):
     for c in self.map.country:
       if c.id_player == self.playerID:
-        self.countries.append(self.playerID)
+        self.countries.append(c.id)

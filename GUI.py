@@ -456,6 +456,8 @@ class CurrentWindow():
                 self.turns.deplacer(self.country_select, country2, self.nb_units)
                 self.nb_units = 0
                 self.turns.next()
+        if self.country_select.id != _id_country_tmp:
+        print("ERROR::SELECTED WRONG COUNTRY")
 
     # draws window
     def draw(self):
@@ -587,13 +589,18 @@ class CurrentWindow():
                     print("Final Attack Path:")
                     for a in attack:
                       print("  {0}::{1}::{2}".format(a[0].name, a[1].name, a[2]))
-                      sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == a[0].id), None)
-                      self.attack([1], a[0].id, sp_msq)
-                      sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == a[1].id), None)
-                      self.attack([1], a[1].id, sp_msq)
+                      attkr = next((c for c in self.map.country if c.id == a[0].id), None)
+                      sp_msq = next((sp for sp in self.sprites_country_masque if sp.id == attkr.id), None)
+                      self.attack([1], attkr.id, sp_msq)
+                      defnd = next((c for c in self.map.country if c.id == a[1].id), None)
+                      sp_msq = next((sp for sp in self.sprites_country_masque if sp.id == defnd.id), None)
+                      self.attack([1], defnd.id, sp_msq)
+                      if attkr.nb_troops < 2:
+                        print("  NUMBER OF TROOPS IS {0}".format(attkr.nb_troops))
+                        break
                       if self.atck_winmove:
-                        self.nb_units = a[0].nb_troops-1
-                        self.attack([1], a[1].id, sp_msq)
+                        self.nb_units = attkr.nb_troops-1
+                        self.attack([1], defnd.id, sp_msq)
                       else:
                         break
                     self.turns.next()
@@ -606,6 +613,8 @@ class CurrentWindow():
                       print("{0}::{1}::{2}".format(deplacement[0], deplacement[1], deplacement[2]))
                       sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == deplacement[0]), None)
                       self.deplacement([1], sp_msq, deplacement[0])
+                      if deplacement[0] != self.country_select.id:
+                        print("ERROR::GAME SELECTED {0} INSTEAD OF {1}".format(self.country_select.id, deplacement[0]))
                       sp_msq=next((sp for sp in self.sprites_country_masque if sp.id == deplacement[1]), None)
                       self.nb_units = deplacement[2]
                       self.deplacement([1], sp_msq, deplacement[1])
