@@ -31,7 +31,7 @@ class Map():
             self.continents[0].country[4].neighbor=[6,7,8,15]
             self.continents[0].country[5].neighbor=[1,2,5,7]
             self.continents[0].country[6].neighbor=[2,4,5,6,8,9]
-            self.continents[0].country[7].neighbor=[2,5,7]
+            self.continents[0].country[7].neighbor=[4,5,7]
             self.continents[0].country[8].neighbor=[2,3,4,7]
             self.continents[1].country[0].neighbor=[11,12] # S. America
             self.continents[1].country[1].neighbor=[10,12,13,25]
